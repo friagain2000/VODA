@@ -9,14 +9,14 @@ jobs:
     runs-on: ubuntu-latest  # 최신 우분투 환경에서 실행
     defaults:
       run:
-        working-directory: movie-front  # 모든 step의 기본 실행 경로를 movie-front로 고정
+        working-directory: frontend  # 모든 step의 기본 실행 경로를 movie-front로 고정
     steps:
       - uses: actions/checkout@v4  # 저장소 코드를 runner에 내려받기
       - uses: actions/setup-node@v4  # Node.js 환경 세팅
         with:
           node-version: 22  # Node.js 22버전 사용
           cache: npm  # npm 캐시 활성화로 설치 속도 향상
-          cache-dependency-path: movie-front/package-lock.json  # 캐시 기준 파일 경로
+          cache-dependency-path: frontend/package-lock.json  # 캐시 기준 파일 경로
       - run: npm ci  # package-lock.json 기준으로 의존성 정확히 설치
       - run: npm run build  # 프로덕션 빌드 실행 (실패 시 PR 머지 차단)
         env:
@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest  # 최신 우분투 환경에서 실행
     defaults:
       run:
-        working-directory: movie-back  # 모든 step의 기본 실행 경로를 movie-back으로 고정
+        working-directory: backend  # 모든 step의 기본 실행 경로를 backend으로 고정
     steps:
       - uses: actions/checkout@v4  # 저장소 코드를 runner에 내려받기
       - uses: actions/setup-python@v5  # Python 환경 세팅
