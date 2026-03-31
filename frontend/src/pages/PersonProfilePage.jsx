@@ -1,13 +1,15 @@
+import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPlay,
   faChevronRight,
   faChevronDown,
   faRobot,
-  faFilm,
   faTv,
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
+import MovieCard from '../components/MovieCard'
+import SectionTitle from '../components/SectionTitle'
 
 // 더미 데이터 (TMDB 연동 전)
 const ACTOR = {
@@ -46,35 +48,6 @@ const COLLABORATORS = [
   { name: '공유', role: 'Actor' },
   { name: '배두나', role: 'Actress' },
 ]
-
-// 영화 세로 카드
-const MovieCard = ({ movie }) => (
-  <div className='w-[360px] flex-shrink-0 flex flex-col cursor-pointer group'>
-    <div className='relative w-full h-[540px] rounded-lg overflow-hidden bg-[#25252d]'>
-      <div className='w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-300'>
-        <FontAwesomeIcon icon={faFilm} className='text-[#71717a] text-4xl' />
-      </div>
-      {/* 그라데이션 */}
-      <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent' />
-      {/* FREE 배지 */}
-      {movie.free && (
-        <div className='absolute top-4 left-4 bg-[#fafafa] rounded px-3 py-1'>
-          <span className='text-[#0a0a0a] text-xs font-bold'>FREE</span>
-        </div>
-      )}
-      {/* 플레이 버튼 */}
-      <div className='absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity'>
-        <div className='w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center'>
-          <FontAwesomeIcon icon={faPlay} className='text-white text-xl ml-1' />
-        </div>
-      </div>
-    </div>
-    <div className='pt-3'>
-      <h4 className='text-[#fafafa] text-base font-bold'>{movie.title}</h4>
-      <p className='text-[#a1a1aa] text-sm mt-1'>{movie.genre} • {movie.year}</p>
-    </div>
-  </div>
-)
 
 // 드라마 에피소드 카드
 const EpisodeCard = ({ ep }) => (
@@ -179,24 +152,23 @@ const PersonProfilePage = () => {
         <div className='absolute top-0 left-[100px] w-[576px] h-[576px] rounded-full bg-[#bda1ff]/8 blur-[150px] pointer-events-none' />
 
         <div className='max-w-[1664px] mx-auto px-12'>
-          {/* 섹션 헤더 */}
-          <div className='flex items-center justify-between mb-8'>
-            <div className='flex items-center gap-3'>
-              <div className='w-[12px] h-[48px] bg-[#a78bfa] rounded-sm' />
-              <div>
-                <h2 className='text-[#fafafa] text-2xl font-bold'>출연 영화</h2>
-                <p className='text-[#a1a1aa] text-sm mt-1'>매주 찾아오는 큐레이터의 무료 영화 선물</p>
-              </div>
-            </div>
-            <Link to='/people/category' className='flex items-center gap-1 text-[#a78bfa] text-sm hover:text-[#c4b5fd] transition-colors'>
-              전체보기 <FontAwesomeIcon icon={faChevronRight} className='text-xs' />
-            </Link>
-          </div>
+          <SectionTitle 
+            title="출연 영화" 
+            subtitle="매주 찾아오는 큐레이터의 무료 영화 선물" 
+            link="/people/category"
+          />
 
           {/* 스크롤 카드 열 */}
           <div className='flex gap-6 overflow-x-auto pb-4 scrollbar-hide'>
             {MOVIES.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
+              <MovieCard 
+                key={movie.id} 
+                title={movie.title} 
+                genre={movie.genre} 
+                year={movie.year} 
+                badgeText={movie.free ? 'FREE' : 'VODA 추천'}
+                className='w-[360px] flex-shrink-0'
+              />
             ))}
           </div>
         </div>
@@ -207,18 +179,11 @@ const PersonProfilePage = () => {
         <div className='absolute top-0 right-[100px] w-[576px] h-[576px] rounded-full bg-[#bda1ff]/6 blur-[150px] pointer-events-none' />
 
         <div className='max-w-[1664px] mx-auto px-12'>
-          <div className='flex items-center justify-between mb-8'>
-            <div className='flex items-center gap-3'>
-              <div className='w-[12px] h-[48px] bg-[#a78bfa] rounded-sm' />
-              <div>
-                <h2 className='text-[#fafafa] text-2xl font-bold'>출연 드라마</h2>
-                <p className='text-[#a1a1aa] text-sm mt-1'>매주 찾아오는 큐레이터의 무료 영화 선물</p>
-              </div>
-            </div>
-            <Link to='/people/category' className='flex items-center gap-1 text-[#a78bfa] text-sm hover:text-[#c4b5fd] transition-colors'>
-              전체보기 <FontAwesomeIcon icon={faChevronRight} className='text-xs' />
-            </Link>
-          </div>
+          <SectionTitle 
+            title="출연 드라마" 
+            subtitle="매주 찾아오는 큐레이터의 무료 영화 선물" 
+            link="/people/category"
+          />
 
           <div className='flex gap-6 overflow-x-auto pb-4 scrollbar-hide'>
             {DRAMAS.map((ep) => (
@@ -238,7 +203,7 @@ const PersonProfilePage = () => {
               {/* 배경 블롭 */}
               <div className='absolute bottom-0 right-0 w-[384px] h-[384px] rounded-full bg-[#bda1ff]/15 blur-[100px] pointer-events-none' />
 
-              <h2 className='text-white text-2xl font-bold relative z-10'>주요 수상 내역</h2>
+              <SectionTitle title="주요 수상 내역" className="mb-0" />
 
               <div className='flex flex-col gap-0 relative z-10'>
                 {AWARDS.map((item, i) => (
@@ -261,7 +226,7 @@ const PersonProfilePage = () => {
             {/* 함께 작업한 인물 */}
             <div className='w-[544px] flex-shrink-0 bg-[#1f1f26] rounded-xl p-10 flex flex-col justify-between'>
               <div className='flex flex-col gap-6'>
-                <h2 className='text-white text-2xl font-bold'>함께 작업한 인물</h2>
+                <SectionTitle title="함께 작업한 인물" className="mb-0" />
 
                 {/* 협업자 그리드 */}
                 <div className='grid grid-cols-2 gap-6'>
@@ -303,4 +268,3 @@ const PersonProfilePage = () => {
 }
 
 export default PersonProfilePage
-age

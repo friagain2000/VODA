@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPaperPlane,
-  faChevronRight,
   faRobot,
   faClapperboard,
 } from '@fortawesome/free-solid-svg-icons'
+import SectionTitle from '../components/SectionTitle'
 
 // 임시 배우 더미 데이터 (TMDB 연동 전)
 const DUMMY_ACTORS = [
@@ -125,20 +125,11 @@ const PersonPage = () => {
       {/* Trend People Section */}
       <section className='w-full py-12 px-12'>
         <div className='max-w-[1664px] mx-auto'>
-          {/* 섹션 헤더 */}
-          <div className='flex items-center justify-between mb-10'>
-            <div className='flex items-center gap-3'>
-              <div className='w-[12px] h-[48px] bg-[#a78bfa] rounded-sm' />
-              <div>
-                <h2 className='text-[#fafafa] text-2xl font-bold'>오늘 트렌딩 인물</h2>
-                <p className='text-[#a1a1aa] text-sm mt-1'>매주 찾아오는 큐레이터의 무료 영화 선물</p>
-              </div>
-            </div>
-            <Link to='/people/category' className='flex items-center gap-1 text-[#a78bfa] text-sm hover:text-[#c4b5fd] transition-colors'>
-              전체보기
-              <FontAwesomeIcon icon={faChevronRight} className='text-xs' />
-            </Link>
-          </div>
+          <SectionTitle 
+            title="오늘 트렌딩 인물" 
+            subtitle="매주 찾아오는 큐레이터의 무료 영화 선물" 
+            link="/people/category"
+          />
 
           {/* 배우 카드 그리드 */}
           <div className='flex gap-6'>
@@ -152,17 +143,10 @@ const PersonPage = () => {
       {/* Focus Section */}
       <section className='w-full py-12 px-12'>
         <div className='max-w-[1664px] mx-auto'>
-          {/* 섹션 헤더 */}
-          <div className='flex items-center justify-between mb-8'>
-            <div className='flex items-center gap-3'>
-              <div className='w-[12px] h-[48px] bg-[#a78bfa] rounded-sm' />
-              <h2 className='text-[#fafafa] text-2xl font-bold'>이달의 포커스</h2>
-            </div>
-            <Link to='/people/category' className='flex items-center gap-1 text-[#a78bfa] text-sm hover:text-[#c4b5fd] transition-colors'>
-              전체보기
-              <FontAwesomeIcon icon={faChevronRight} className='text-xs' />
-            </Link>
-          </div>
+          <SectionTitle 
+            title="이달의 포커스" 
+            link="/people/category"
+          />
 
           {/* 포커스 카드 행 */}
           <div className='flex gap-6 h-[411px]'>

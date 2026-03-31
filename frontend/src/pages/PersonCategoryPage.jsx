@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faClapperboard } from '@fortawesome/free-solid-svg-icons'
+import SectionTitle from '../components/SectionTitle'
 
 // 더미 데이터 12명 (TMDB 연동 전)
 const DUMMY_PEOPLE = [
@@ -64,11 +65,7 @@ const PersonCategoryPage = () => {
       <div className='absolute top-[300px] left-0 w-[768px] h-[614px] rounded-full bg-[#ff67ad]/6 blur-[200px] pointer-events-none' />
 
       <div className='max-w-[1664px] mx-auto px-12 py-10'>
-        {/* 헤더 */}
-        <div className='flex items-center gap-3 mb-10 h-[64px]'>
-          <FontAwesomeIcon icon={faUser} className='text-[#a78bfa] text-2xl' />
-          <h1 className='text-[#fafafa] text-3xl font-bold'>감독/출연</h1>
-        </div>
+        <SectionTitle title="감독/출연" icon={faUser} className="mb-10 h-[64px]" />
 
         {/* 카드 그리드 — 4열 */}
         <div className='grid grid-cols-4 gap-x-6 gap-y-12'>
