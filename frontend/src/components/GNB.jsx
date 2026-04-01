@@ -1,46 +1,72 @@
-import { NavLink, Link } from 'react-router'
+import { useState } from 'react'
+import { NavLink, Link, useNavigate } from 'react-router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch, faUserCircle } from '@fortawesome/free-solid-svg-icons'
+import { faSearch, faUserCircle, faBell } from '@fortawesome/free-solid-svg-icons'
 import { twMerge } from 'tailwind-merge'
 
 const GNB = () => {
+  const [query, setQuery] = useState('')
+  const navigate = useNavigate()
+
   const menus = [
     { name: '홈', path: '/' },
     { name: '영화보다', path: '/movie' },
     { name: 'TV보다', path: '/tv' },
     { name: '사람을 보다', path: '/person' },
     { name: '물어보다', path: '/ask' },
-    { name: '찾아보다', path: '/search' },
   ]
 
-  const linkStyle = ({ isActive }) => 
+  const linkStyle = ({ isActive }) =>
     twMerge(
-      'text-xl font-medium transition-colors hover:text-primary-400 px-4 py-2 rounded-lg',
-      isActive ? 'text-primary-400 bg-primary-900/20' : 'text-neutral-400'
+      'font-serif text-xl font-semibold tracking-tight transition-colors pb-2 border-b-4',
+      isActive
+        ? 'text-primary-400 border-primary-400'
+        : 'text-neutral-400 border-transparent hover:text-primary-400'
     )
 
+  const handleSearch = (e) => {
+    e.preventDefault()
+    if (query.trim()) navigate(`/search?q=${encodeURIComponent(query.trim())}`)
+  }
+
   return (
-    <header className='sticky top-0 z-50 h-[100px] flex items-center justify-between px-12 bg-[#0e0e13]/80 backdrop-blur-md shadow-glow-purple border-b border-white/5'>
-      {/* 로고 */}
-      <Link to='/' className='text-3xl font-bold tracking-tighter text-primary-400'>
-        VODA
-      </Link>
-
-      {/* 메뉴 */}
-      <nav className='flex items-center gap-4'>
-        {menus.map((m) => (
-          <NavLink key={m.path} to={m.path} className={linkStyle}>
-            {m.name}
-          </NavLink>
-        ))}
-      </nav>
-
-      {/* 검색 및 프로필 */}
-      <div className='flex items-center gap-8'>
-        <Link to='/search' className='text-neutral-400 hover:text-primary-400 transition-colors text-2xl'>
-          <FontAwesomeIcon icon={faSearch} />
+    <header className='sticky top-0 z-50 flex items-center justify-between px-12 py-6 bg-[rgba(14,14,19,0.4)] backdrop-blur-md border-b border-white/10 shadow-glow-purple'>
+      {/* 로고 + 메뉴 */}
+      <div className='flex items-center gap-18'>
+        <Link to='/' className='font-sans text-3xl font-bold tracking-tighter text-neutral-50'>
+          VODA
         </Link>
-        <Link to='/profile' className='text-neutral-400 hover:text-primary-400 transition-colors text-3xl'>
+
+        <nav className='flex items-center gap-12'>
+          {menus.map((m) => (
+            <NavLink key={m.path} to={m.path} end={m.path === '/'} className={linkStyle}>
+              {m.name}
+            </NavLink>
+          ))}
+        </nav>
+      </div>
+
+      {/* 검색바 + 알림 + 프로필 */}
+      <div className='flex items-center gap-8'>
+        {/* 검색바 */}
+        <form onSubmit={handleSearch} className='flex items-center gap-3 px-5 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md'>
+          <FontAwesomeIcon icon={faSearch} className='text-neutral-400 text-lg' />
+          <input
+            type='text'
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder='찾아보다'
+            className='bg-transparent font-serif text-xl text-neutral-400 placeholder:text-neutral-400 w-72 outline-none'
+          />
+        </form>
+
+        {/* 알림 */}
+        <button className='text-neutral-400 hover:text-primary-400 transition-colors text-2xl'>
+          <FontAwesomeIcon icon={faBell} />
+        </button>
+
+        {/* 프로필 */}
+        <Link to='/profile' className='text-neutral-400 hover:text-primary-400 transition-colors text-3xl ring-2 ring-primary-400 rounded-full p-0.5'>
           <FontAwesomeIcon icon={faUserCircle} />
         </Link>
       </div>
