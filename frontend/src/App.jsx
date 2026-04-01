@@ -2,11 +2,14 @@ import { Outlet } from 'react-router'
 import GNB from './components/GNB'
 import Footer from './components/Footer'
 
-// 공통 레이아웃: GNB + 페이지 콘텐츠 + Footer
+/**
+ * Layout: 전역 레이아웃
+ * 화면 전체 너비를 1920px로 제한하고 중앙 정렬합니다.
+ */
 const Layout = () => (
   <div className='min-h-screen flex flex-col bg-[#0e0e13]'>
     <GNB />
-    <main className='flex-1'>
+    <main className='flex-1 w-full max-w-[1920px] mx-auto'>
       <Outlet />
     </main>
     <Footer />

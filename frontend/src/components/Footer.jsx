@@ -14,7 +14,7 @@ const Footer = () => {
 
   return (
     <footer className='bg-black text-[#a1a1aa] py-16 px-12 border-t border-white/5'>
-      <div className='max-w-[1664px] mx-auto'>
+      <div className='max-w-[1920px] mx-auto'>
         {/* 소셜 미디어 아이콘 */}
         <div className='flex gap-6 mb-10 text-[#fafafa] text-2xl'>
           {SOCIAL.map(({ label, text }) => (
