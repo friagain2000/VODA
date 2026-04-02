@@ -39,14 +39,18 @@ const AboutPage = () => {
       <div className='px-20 space-y-16 mt-12'>
         {/* 시놉시스 및 상세 정보 (장르, 출시일, 러닝타임) */}
         <Synopsis 
-          text={data.overview}
-          genres={data.genres?.map(g => g.name).join(', ')}
-          date={data.release_date || data.first_air_date}
+          overview={data.overview}
+          genres={data.genres}
+          country={data.production_countries?.[0]?.name}
+          year={(data.release_date || data.first_air_date)?.slice(0, 4)}
           runtime={data.runtime || (data.episode_run_time && data.episode_run_time[0])}
+          director={data.credits?.crew?.find(c => c.job === 'Director')}
+          company={data.production_companies?.[0]?.name}
+          cast={data.credits?.cast?.slice(0, 5).map(c => c.name)}
         />
 
         {/* 출연진 섹션 (최대 10명 표시) */}
-        <CastSection casts={data.credits?.cast} />
+        <CastSection cast={data.credits?.cast?.slice(0, 10)} />
 
         {/* TV 시리즈 전용 에피소드 목록 섹션 */}
         {isTv && seasonData && (
@@ -59,8 +63,9 @@ const AboutPage = () => {
         {/* 평점 요약 섹션 */}
         <div className='flex justify-center'>
           <ScoreSummary 
-            score={data.vote_average} 
+            avg={data.vote_average} 
             count={data.vote_count} 
+            reviews={data.reviews?.results}
           />
         </div>
 
