@@ -63,6 +63,7 @@ const PersonPage = () => {
         <SectionTitle
           title={activeTab === 'trending' ? '오늘의 트렌딩 인물' : '인기 인물'}
           subtitle={activeTab === 'trending' ? '지금 가장 주목받는 인물' : '전 세계에서 사랑받는 인물'}
+          link='/person/category'
         />
         <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6'>
           {persons.map((p) => (
