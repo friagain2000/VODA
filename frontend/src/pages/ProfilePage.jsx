@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Feed from "../components/Feed"; 
 import { EP } from '../api/tmdb'
+import ProfileGrid from "../components/ProfileGrid";
 
 const ProfilePage = () => {
   const [popularMovies, setPopularMovies] = useState([])
@@ -29,6 +30,7 @@ const ProfilePage = () => {
           mediaType="movie"
         />
       )}
+      <ProfileGrid />
     </div>
   );
 };
