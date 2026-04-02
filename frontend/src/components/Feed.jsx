@@ -46,7 +46,7 @@ const Feed = ({ type = 'normal', title, subtitle, items = [], mediaType = 'movie
                 {...commonProps}
                 rank={idx + 1}
                 poster={EP.img(item.poster_path)}
-                genre={item.genre_ids?.[0] ? '영화' : ''}
+                genre={item.genre_ids?.[0] ? (mediaType === 'tv' ? 'TV 시리즈' : '영화') : ''}
               />
             )
           }

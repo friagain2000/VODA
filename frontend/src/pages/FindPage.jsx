@@ -6,7 +6,7 @@ import MoodGrid from '../components/MoodGrid'
 import SearchBar from '../components/SearchBar'
 import FilterChips from '../components/FilterChips'
 
-// TMDB 장르 ID 기반 필터 목록
+// TMDB 장르 ID 기반 필터
 const GENRE_FILTERS = [
   { id: '28',    label: '액션' },
   { id: '35',    label: '코미디' },
@@ -30,24 +30,22 @@ const REGION_FILTERS = [
   { id: 'GB', label: '영국' },
 ]
 
-// 무드 탐색 더미 데이터
 const MOODS = [
-  { title: '심장이 쫄깃한',  desc: '손에 땀을 쥐게 하는 스릴러', img: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=800' },
-  { title: '몽글몽글 로맨스', desc: '설레는 사랑 이야기',           img: 'https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=800' },
-  { title: '배꼽 잡는 코미디', desc: '스트레스 날려버릴 웃음',      img: 'https://images.unsplash.com/photo-1527224857830-43a7acc85260?w=800' },
-  { title: '웅장한 대서사시', desc: '압도적인 스케일의 SF',          img: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800' },
+  { title: '심장이 쫄깃한',   desc: '손에 땀을 쥐게 하는 스릴러', img: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=800' },
+  { title: '몽글몽글 로맨스',  desc: '설레는 사랑 이야기',           img: 'https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=800' },
+  { title: '배꼽 잡는 코미디', desc: '스트레스 날려버릴 웃음',        img: 'https://images.unsplash.com/photo-1527224857830-43a7acc85260?w=800' },
+  { title: '웅장한 대서사시',  desc: '압도적인 스케일의 SF',           img: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800' },
 ]
 
 const FindPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  // URL 쿼리 파라미터에서 현재 필터 값 추출
   const query  = searchParams.get('q')      || ''
   const genre  = searchParams.get('genre')  || ''
   const year   = searchParams.get('year')   || '2024'
   const region = searchParams.get('region') || 'KR'
 
-  // 필터 변경 → URL 쿼리 업데이트
+  // URL 파라미터 업데이트 헬퍼
   const updateFilter = (key, value) => {
     const p = new URLSearchParams(searchParams)
     if (value) p.set(key, value)
@@ -55,16 +53,12 @@ const FindPage = () => {
     setSearchParams(p)
   }
 
-  // 장르 칩 토글 (같은 값 클릭 시 해제)
-  const handleGenre = (id) => updateFilter('genre', genre === id ? '' : id)
-
-  // SearchBar submit → q 파라미터 갱신
+  // 장르 칩: 같은 값 클릭 시 해제
+  const handleGenre  = (id) => updateFilter('genre', genre === id ? '' : id)
   const handleSearch = (val) => updateFilter('q', val)
+  const handleMood   = (mood) => updateFilter('q', mood.title)
 
-  // 무드 클릭 → 해당 무드 제목으로 검색
-  const handleMood = (mood) => updateFilter('q', mood.title)
-
-  // query가 있으면 검색, 없으면 discover
+  // query 있으면 멀티검색, 없으면 discover — deps로 필터 변경 시 재호출
   const { data, loading } = useFetch(
     () => query
       ? EP.search(query)
@@ -87,35 +81,23 @@ const FindPage = () => {
         <SearchBar onSubmit={handleSearch} />
       </section>
 
-      {/* 2. FilterChips — 장르 / 연도 / 국가 3그룹 */}
+      {/* 2. FilterChips — 장르 / 연도 / 국가 */}
       <section className='mb-12 space-y-6'>
         <div>
           <p className='text-zinc-500 text-sm mb-3 font-medium'>장르</p>
-          <FilterChips
-            filters={GENRE_FILTERS}
-            active={genre}
-            onChange={handleGenre}
-          />
+          <FilterChips filters={GENRE_FILTERS} active={genre}  onChange={handleGenre} />
         </div>
         <div>
           <p className='text-zinc-500 text-sm mb-3 font-medium'>연도</p>
-          <FilterChips
-            filters={YEAR_FILTERS}
-            active={year}
-            onChange={(id) => updateFilter('year', id)}
-          />
+          <FilterChips filters={YEAR_FILTERS}  active={year}   onChange={(id) => updateFilter('year', id)} />
         </div>
         <div>
           <p className='text-zinc-500 text-sm mb-3 font-medium'>국가</p>
-          <FilterChips
-            filters={REGION_FILTERS}
-            active={region}
-            onChange={(id) => updateFilter('region', id)}
-          />
+          <FilterChips filters={REGION_FILTERS} active={region} onChange={(id) => updateFilter('region', id)} />
         </div>
       </section>
 
-      {/* 3. 검색 결과 (rank 타입으로 순위 강조) */}
+      {/* 3. 검색 결과 */}
       <section className='mb-16'>
         {loading ? (
           <p className='text-zinc-500 py-20 text-center'>결과를 불러오는 중...</p>
@@ -126,7 +108,7 @@ const FindPage = () => {
         )}
       </section>
 
-      {/* 4. 무드 그리드 (Bento Style) */}
+      {/* 4. 무드 그리드 */}
       <MoodGrid moods={MOODS} onItemClick={handleMood} />
 
     </main>

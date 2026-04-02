@@ -7,7 +7,6 @@ import CastSection from '../components/CastSection'
 import ScoreSummary from '../components/ScoreSummary'
 import ReviewCard from '../components/ReviewCard'
 import Feed from '../components/Feed'
-import ChatBtn from '../components/ChatBtn'
 import EpisodeSection from '../components/EpisodeSection'
 
 /**
@@ -18,23 +17,23 @@ const AboutPage = () => {
   const { type, id } = useParams()
 
   // 2. 상세 데이터 호출 (credits, reviews, videos, similar 포함)
-  const { data, loading, error } = useFetch(EP.detail(type, id))
+  const { data, loading, err } = useFetch(() => EP.detail(type, id), [type, id])
 
   // 3. TV 시리즈일 경우 시즌 1 에피소드 데이터 추가 호출
   const isTv = type === 'tv'
-  const { data: seasonData } = useFetch(isTv ? EP.season(id, 1) : null)
+  const { data: seasonData } = useFetch(isTv ? () => EP.season(id, 1) : null, [isTv, id])
 
   // 로딩 및 에러 처리
   if (loading) return <div className='min-h-screen bg-neutral-950 flex items-center justify-center text-zinc-400'>Loading...</div>
-  if (error || !data) return <div className='min-h-screen bg-neutral-950 flex items-center justify-center text-red-500'>데이터를 불러오는 중 오류가 발생했습니다.</div>
+  if (err || !data) return <div className='min-h-screen bg-neutral-950 flex items-center justify-center text-red-500'>데이터를 불러오는 중 오류가 발생했습니다.</div>
 
   return (
     <main className='bg-neutral-950 min-h-screen pb-20'>
       {/* 히어로 섹션: 배경 이미지 및 타이틀 표시 */}
       <Hero 
         type={type} 
-        title={data.title || data.name} 
-        img={data.backdrop_path} 
+        title={data.title || data.name}
+        backdrop={data.backdrop_path}
       />
 
       <div className='px-20 space-y-16 mt-12'>
@@ -92,8 +91,6 @@ const AboutPage = () => {
         />
       </div>
 
-      {/* 우측 하단 고정 AI 챗봇 버튼 */}
-      <ChatBtn />
     </main>
   )
 }
