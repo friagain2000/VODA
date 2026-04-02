@@ -1,27 +1,32 @@
-import { Link } from 'react-router'
+// src/components/HCard.jsx
+import { useNavigate } from 'react-router'
 import { EP } from '../api/tmdb'
 
-const HCard = ({ id, type, title, poster, progress }) => {
+const HCard = ({ id, type, title, poster, genre, runtime, vote_average, showCurator = false }) => {
+  const navigate = useNavigate()
+
   return (
-    <Link to={`/${type}/${id}`} className='w-110 flex-shrink-0'>
-      <div className='aspect-video rounded-2xl overflow-hidden'>
-        <img
-          src={EP.img(poster, 'w780')}
-          alt={title}
-          className='size-full object-cover'
-        />
-      </div>
-      <h3 className='mt-3 text-lg font-medium text-zinc-50 truncate'>{title}</h3>
-      {progress != null && (
-        <div className='mt-2 h-1 bg-zinc-700 rounded-full'>
-          <div
-            className='h-full bg-primary-400 rounded-full'
-            style={{ width: `${progress}%` }}
-          />
+    <div onClick={() => navigate(`/${type}/${id}`)} className='w-110 flex-shrink-0 cursor-pointer'>
+      <div className='rounded-2xl overflow-hidden border-2 border-neutral-800 bg-neutral-900/40 backdrop-blur-md flex flex-col'>
+        <div className='aspect-video overflow-hidden'>
+          <img src={EP.img(poster, 'w780')} alt={title} className='size-full object-cover' />
         </div>
-      )}
-    </Link>
+        <div className='p-5 flex flex-col gap-1'>
+          <div className='flex items-center justify-between'>
+            {showCurator
+              ? <span className='text-sm font-bold text-secondary-500'>CURATOR'S CHOICE</span>
+              : <span />
+            }
+            <div className='flex items-center gap-1'>
+              <i className='fa-solid fa-star text-primary-400 text-sm'></i>
+              <span className='text-sm font-bold text-primary-400'>{vote_average?.toFixed(1)}</span>
+            </div>
+          </div>
+          <h3 className='text-2xl font-semibold text-neutral-50 truncate'>{title}</h3>
+          <p className='text-sm text-neutral-400'>{genre} • {runtime}분</p>
+        </div>
+      </div>
+    </div>
   )
 }
-
 export default HCard

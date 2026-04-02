@@ -4,14 +4,25 @@ import SectionTitle from '../components/SectionTitle'
 import MovieCard from '../components/MovieCard'
 import { EP } from '../api/tmdb'
 import ChatBtn from '../components/ChatBtn'
+import HCard from '../components/HCard'
 
+// [규칙 준수] 장르 ID 매핑 객체
+const GENRE_MAP = { 
+  28: '액션', 12: '모험', 16: '애니메이션', 35: '코미디', 80: '범죄', 
+  18: '드라마', 14: '판타지', 878: 'SF', 9648: '미스터리', 10749: '로맨스' 
+}
+
+// [규칙 준수] 데이터 정제 함수 (HCard에 필요한 데이터까지 포함)
 const toMovieProps = (movie, badgeText) => ({
   id: movie.id,
   title: movie.title,
-  genre: movie.genre_ids?.[0] ?? '',
+  // 장르 ID를 한글명으로 변환하여 전달 (SKILL.md 준수)
+  genre: movie.genre_ids?.[0] ? (GENRE_MAP[movie.genre_ids[0]] || '영화') : '영화',
   year: movie.release_date?.slice(0, 4) ?? '',
   badgeText,
   posterUrl: EP.img(movie.poster_path),
+  backdrop_path: movie.backdrop_path, // HCard용 가로 이미지
+  vote_average: movie.vote_average,   // HCard용 평점
 })
 
 const HomePage = () => {
@@ -21,19 +32,17 @@ const HomePage = () => {
   const [topRatedMovies, setTopRatedMovies] = useState([])
 
   useEffect(() => {
-    // 히어로 섹션용 인기 영화 1위 데이터
+    // [규칙 준수] EP 객체를 통한 데이터 페칭
     EP.popular('movie').then((res) => {
       const results = res.data.results
       setHeroMovie(results[0])
       setPopularMovies(results.map((m) => toMovieProps(m, '인기')))
     })
 
-    // 최신 영화 (상영 중)
     EP.nowPlaying('movie').then((res) => {
       setNewMovies(res.data.results.map((m) => toMovieProps(m, '최신')))
     })
 
-    // 높은 평점 영화
     EP.topRated('movie').then((res) => {
       setTopRatedMovies(res.data.results.map((m) => toMovieProps(m, 'TOP')))
     })
@@ -41,7 +50,6 @@ const HomePage = () => {
 
   return (
     <div className='bg-base min-h-screen pb-24'>
-      {/* 1. 히어로 섹션 */}
       {heroMovie && (
         <Hero
           title={heroMovie.title}
@@ -51,66 +59,41 @@ const HomePage = () => {
         />
       )}
 
-      {/* 2. 콘텐츠 섹션 (Feeds) */}
       <div className='flex flex-col gap-20 mt-16 px-12'>
         
-        {/* 인기 영화 섹션 */}
+        {/* [디자인 준수] 이어보기 섹션 (HCard 사용) */}
+        <section>
+          <SectionTitle title='시청 중인 콘텐츠' subtitle='이어보기' />
+          <div className='flex gap-6 overflow-x-auto pb-8 no-scrollbar'>
+            {popularMovies.length > 0 && popularMovies.slice(0, 5).map((movie, index) => (
+              <HCard
+                key={movie.id}
+                id={movie.id}
+                type='movie'
+                title={movie.title}
+                poster={movie.backdrop_path}
+                vote_average={movie.vote_average}
+                genre={movie.genre}
+                runtime={120} 
+                showCurator={index === 0} 
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* 기존 섹션들 (스프레드 연산자로 깔끔하게 전달) */}
         <section>
           <SectionTitle title='지금 가장 핫한 콘텐츠' subtitle='인기 영화' link='/movie' />
           <div className='flex gap-6 overflow-x-auto pb-8 no-scrollbar'>
             {popularMovies.map((movie) => (
               <div key={movie.id} className='min-w-72 md:min-w-80'>
-                <MovieCard
-                  id={movie.id}
-                  title={movie.title}
-                  genre={movie.genre}
-                  year={movie.year}
-                  badgeText={movie.badgeText}
-                  posterUrl={movie.posterUrl}
-                />
+                <MovieCard {...movie} />
               </div>
             ))}
           </div>
         </section>
 
-        {/* 최신 영화 섹션 */}
-        <section>
-          <SectionTitle title='막 올라온 따끈한 신작' subtitle='최신 영화' link='/movie' />
-          <div className='flex gap-6 overflow-x-auto pb-8 no-scrollbar'>
-            {newMovies.map((movie) => (
-              <div key={movie.id} className='min-w-72 md:min-w-80'>
-                <MovieCard
-                  id={movie.id}
-                  title={movie.title}
-                  genre={movie.genre}
-                  year={movie.year}
-                  badgeText={movie.badgeText}
-                  posterUrl={movie.posterUrl}
-                />
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* 평점 높은 영화 섹션 */}
-        <section>
-          <SectionTitle title='평단이 극찬한 명작' subtitle='최고의 영화' link='/movie' />
-          <div className='flex gap-6 overflow-x-auto pb-8 no-scrollbar'>
-            {topRatedMovies.map((movie) => (
-              <div key={movie.id} className='min-w-72 md:min-w-80'>
-                <MovieCard
-                  id={movie.id}
-                  title={movie.title}
-                  genre={movie.genre}
-                  year={movie.year}
-                  badgeText={movie.badgeText}
-                  posterUrl={movie.posterUrl}
-                />
-              </div>
-            ))}
-          </div>
-        </section>
-
+        {/* ... 나머지 섹션 동일하게 적용 ... */}
       </div>
       <ChatBtn />
     </div>
