@@ -1,9 +1,17 @@
+import Feed from "../components/Feed";
+
 // TODO: 사용자 프로필 페이지 구현
 const ProfilePage = () => {
   return (
     <div className='text-white px-12 py-16'>
       <h1 className='text-3xl font-bold'>프로필</h1>
-      <p className='text-white/50 mt-2'>준비 중입니다.</p>
+          <Feed 
+          type='play' // HCard를 사용하는 가로형 피드 타입
+          title='시청 중인 콘텐츠' 
+          sub='이어보기' 
+          items={popularMovies.slice(0, 5)} 
+          mediaType='movie'
+        />
     </div>
   )
 }
