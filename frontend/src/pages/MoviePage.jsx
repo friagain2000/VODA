@@ -69,31 +69,31 @@ const MoviePage = () => {
       <div className='px-12 mt-12 flex flex-col gap-10'>
         {/* 1. 랭킹 피드 (전체일 때만 표시하거나 상단 고정) */}
         {activeTab === 0 && (
-          <Feed 
-            type='rank' 
-            title='지금 가장 뜨거운 영화' 
-            sub='VODA에서 가장 많이 찾은 영화 랭킹' 
-            items={rankMovies} 
-            mediaType='movie' 
+          <Feed
+            type='rank'
+            title='지금 가장 뜨거운 영화'
+            sub='VODA에서 가장 많이 찾은 영화 랭킹'
+            items={rankMovies}
+            mediaType='movie'
           />
         )}
 
         {/* 2. 장르별/전체 피드 */}
-        <Feed 
-          type='normal' 
+        <Feed
+          type='normal'
           title={activeTab === 0 ? '추천 영화' : `${genres.find(g => g.id === activeTab)?.name} 영화`}
           sub='당신을 위해 엄선한 명작들'
-          items={genreMovies} 
-          mediaType='movie' 
+          items={genreMovies}
+          mediaType='movie'
         />
 
         {/* 3. 신작 피드 */}
-        <Feed 
-          type='normal' 
-          title='막 올라온 따끈한 신작' 
+        <Feed
+          type='normal'
+          title='막 올라온 따끈한 신작'
           sub='극장에서 갓 내려온 최신 영화들'
-          items={newMovies} 
-          mediaType='movie' 
+          items={newMovies}
+          mediaType='movie'
         />
 
         {/* [임시] ChatBubble 디자인 미리보기 섹션 */}
