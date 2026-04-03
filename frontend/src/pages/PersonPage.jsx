@@ -13,6 +13,8 @@ import Feed from "../components/Feed";
 const TABS = [
   { id: "trending", name: "오늘의 트렌딩" },
   { id: "popular", name: "인기 인물" },
+  { id: "actor", name: "인기 배우" },
+  { id: "director", name: "인기 감독" },
 ];
 
 const PersonPage = () => {
@@ -20,18 +22,32 @@ const PersonPage = () => {
   const [popular, setPopular] = useState([]);
   const [activeTab, setActiveTab] = useState("trending");
   const [loading, setLoading] = useState(true);
+  const [actors, setActors] = useState([]);
+  const [directors, setDirectors] = useState([]);
 
   useEffect(() => {
     Promise.all([EP.personTrending("day"), EP.personPopular()])
+      // 변경 3: useEffect 내부 — popular 응답에서 필터링
       .then(([trendRes, popRes]) => {
+        const pop = popRes.data.results;
         setTrending(trendRes.data.results);
-        setPopular(popRes.data.results);
+        setPopular(pop);
+        setActors(pop.filter((p) => p.known_for_department === "Acting"));
+        setDirectors(pop.filter((p) => p.known_for_department === "Directing"));
         setLoading(false);
       })
       .catch(console.error);
   }, []);
 
-  const persons = activeTab === "trending" ? trending : popular;
+  // 변경 4: persons 분기
+  const persons =
+    activeTab === "trending"
+      ? trending
+      : activeTab === "popular"
+        ? popular
+        : activeTab === "actor"
+          ? actors
+          : directors;
 
   if (loading)
     return <div className="p-20 text-center text-zinc-500">로딩 중...</div>;
