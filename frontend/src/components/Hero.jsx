@@ -42,6 +42,7 @@ const Hero = ({
     }
 
     if (videos && videos.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTrailerKey(findBestTrailer(videos))
     } else if (id && !['person', 'home'].includes(type)) {
       const apiType = type === 'detail' ? location.pathname.split('/')[1] : type
