@@ -46,6 +46,8 @@ const TVPage = () => {
       {/* 히어로 섹션 */}
       {heroMovie && (
         <Hero
+          type='tv'
+          id={heroMovie.id}
           title={heroMovie.name}
           backdrop={heroMovie.backdrop_path}
           poster={heroMovie.poster_path}
@@ -64,31 +66,31 @@ const TVPage = () => {
       <div className='px-12 mt-12 flex flex-col gap-10'>
         {/* 1. 랭킹 피드 */}
         {activeTab === 0 && (
-          <Feed 
-            type='rank' 
-            title='지금 가장 뜨거운 TV' 
-            sub='VODA에서 가장 많이 찾은 TV 랭킹' 
-            items={rankMovies} 
-            mediaType='tv' 
+          <Feed
+            type='rank'
+            title='지금 가장 뜨거운 TV'
+            sub='VODA에서 가장 많이 찾은 TV 랭킹'
+            items={rankMovies}
+            mediaType='tv'
           />
         )}
 
         {/* 2. 장르별/전체 피드 */}
-        <Feed 
-          type='normal' 
+        <Feed
+          type='normal'
           title={activeTab === 0 ? '추천 TV' : `${genres.find(g => g.id === activeTab)?.name} TV`}
           sub='당신을 위해 엄선한 명작들'
-          items={genreMovies} 
-          mediaType='tv' 
+          items={genreMovies}
+          mediaType='tv'
         />
 
         {/* 3. 신작 피드 */}
-        <Feed 
-          type='normal' 
-          title='막 올라온 따끈한 신작' 
+        <Feed
+          type='normal'
+          title='막 올라온 따끈한 신작'
           sub='지금 방영 중인 최신 TV 시리즈'
-          items={newMovies} 
-          mediaType='tv' 
+          items={newMovies}
+          mediaType='tv'
         />
       </div>
 
