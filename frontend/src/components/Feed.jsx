@@ -5,6 +5,7 @@ import RankCard from './RankCard'
 import HCard from './HCard'
 import PersonCard from './PersonCard'
 import { EP } from '../api/tmdb'
+import useDragScroll from '../hooks/useDragScroll'
 
 /**
  * Feed 컴포넌트: 섹션 타이틀과 카드 리스트를 포함하는 공통 섹션
@@ -23,16 +24,25 @@ const Feed = ({
   mediaType = 'movie',
   link = '#',
 }) => {
+  const { ref, onMouseDown, onMouseMove, onMouseUp, onMouseLeave, onDragStart, onClickCapture } = useDragScroll()
+
   if (!items || items.length === 0) return null
 
   return (
     <section className='w-full'>
       <SectionTitle title={title} subtitle={subtitle} link={link} />
 
-      {/* 카드 리스트 (가로 스크롤) */}
+      {/* 카드 리스트 (가로 스크롤 + 드래그) */}
       <div
+        ref={ref}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseLeave}
+        onDragStart={onDragStart}
+        onClickCapture={onClickCapture}
         className={twMerge(
-          'flex gap-6 overflow-x-auto pb-8 no-scrollbar pt-4',
+          'flex gap-6 overflow-x-auto pb-8 no-scrollbar pt-4 cursor-grab select-none',
           type === 'rank' && 'gap-10',
           type === 'person' && 'gap-8 px-2',
         )}
