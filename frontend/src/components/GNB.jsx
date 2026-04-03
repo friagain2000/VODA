@@ -65,10 +65,12 @@ const GNB = () => {
           onSubmit={handleSearch}
           className="flex items-center gap-3 px-5 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md"
         >
-          <FontAwesomeIcon
-            icon={faSearch}
-            className="text-neutral-400 text-lg"
-          />
+          <Link to="/find">
+            <FontAwesomeIcon
+              icon={faSearch}
+              className="text-neutral-400 text-lg hover:text-primary-400 transition-colors cursor-pointer"
+            />
+          </Link>
           <input
             type="text"
             value={query}
