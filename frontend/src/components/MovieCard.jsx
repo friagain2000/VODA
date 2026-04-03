@@ -2,15 +2,21 @@ import { useState, useRef } from 'react'
 import { Link } from 'react-router'
 import { twMerge } from 'tailwind-merge'
 import { EP } from '../api/tmdb'
+import useFetch from '../hooks/useFetch'
 
 const MovieCard = ({ id, type = 'movie', title, genre, year, badgeText, posterUrl }) => {
   const [hovered, setHovered] = useState(false)
   const [trailerKey, setTrailerKey] = useState(null)
-  const [overview, setOverview] = useState('')
   const timerRef = useRef(null)
   const fetched = useRef(false)
 
-  // 예고편 우선순위 선택 (공식 트레일러 > 트레일러 > 티저 > 아무 YouTube 영상)
+  // 마운트 시 detail 미리 로드 — 장르·연도·개요 즉시 표시
+  const { data: detail } = useFetch(() => EP.detail(type, id), [id])
+
+  const genreText = detail?.genres?.map(g => g.name).join(' · ') || genre || ''
+  const yearText  = year || detail?.release_date?.slice(0, 4) || detail?.first_air_date?.slice(0, 4) || ''
+  const overview  = detail?.overview || ''
+
   const findTrailer = (vids) => {
     if (!vids || vids.length === 0) return null
     return (
@@ -27,29 +33,11 @@ const MovieCard = ({ id, type = 'movie', title, genre, year, badgeText, posterUr
       setHovered(true)
       if (!fetched.current) {
         fetched.current = true
-        // 전 세계 예고편 3단계 탐색
-        ;(async () => {
-          let key = null
-
-          // 1단계: 한국어 예고편
-          const koRes = await EP.videos(type, id, 'ko-KR')
-          key = findTrailer(koRes.data.results)?.key || null
-
-          // 2단계: 영어(글로벌) 예고편
-          if (!key) {
-            const enRes = await EP.videos(type, id, 'en-US')
-            key = findTrailer(enRes.data.results)?.key || null
-          }
-
-          // 3단계: 무차별 탐색 (언어 무관 전체) + 개요
-          const detailRes = await EP.detail(type, id)
-          setOverview(detailRes.data.overview || '')
-          if (!key) {
-            key = findTrailer(detailRes.data.videos?.results)?.key || null
-          }
-
-          if (key) setTrailerKey(key)
-        })()
+        // detail은 이미 로드됨 — 예고편 key만 세팅
+        const allVids = detail?.videos?.results || []
+        const koVids  = allVids.filter(v => v.iso_639_1 === 'ko')
+        const key = findTrailer(koVids)?.key || findTrailer(allVids)?.key || null
+        if (key) setTrailerKey(key)
       }
     }, 600)
   }
@@ -70,7 +58,7 @@ const MovieCard = ({ id, type = 'movie', title, genre, year, badgeText, posterUr
       )}
     >
       {/* 포스터 + 오버레이 컨테이너 */}
-      <div className='relative aspect-[2/3] rounded-2xl overflow-hidden shadow-lg border border-white/5'>
+      <div className='relative aspect-2/3 rounded-2xl overflow-hidden shadow-lg border border-white/5'>
         <img
           src={posterUrl}
           alt={title}
@@ -108,11 +96,11 @@ const MovieCard = ({ id, type = 'movie', title, genre, year, badgeText, posterUr
 
           {/* 정보 영역 */}
           <div className='flex flex-col gap-2 p-4 flex-1 overflow-hidden'>
-            <h3 className='text-white font-bold text-base leading-tight line-clamp-2'>{title}</h3>
+            <h3 className='text-white font-bold leading-tight line-clamp-2'>{title}</h3>
             <div className='flex items-center gap-1.5 text-xs text-neutral-500'>
-              {year && <span>{year}</span>}
-              {year && genre && <span>·</span>}
-              {genre && <span>{genre}</span>}
+              {yearText && <span>{yearText}</span>}
+              {yearText && genreText && <span>·</span>}
+              {genreText && <span>{genreText}</span>}
             </div>
             {overview ? (
               <p className='text-neutral-400 text-xs leading-relaxed line-clamp-4 mt-1'>
@@ -135,9 +123,9 @@ const MovieCard = ({ id, type = 'movie', title, genre, year, badgeText, posterUr
           {title}
         </h3>
         <div className='flex items-center gap-2 text-sm text-neutral-500 mt-1'>
-          <span>{genre}</span>
+          <span>{genreText}</span>
           <span className='text-xs opacity-30'>|</span>
-          <span>{year}</span>
+          <span>{yearText}</span>
         </div>
       </div>
     </Link>
