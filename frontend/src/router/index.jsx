@@ -11,7 +11,6 @@ import AskPage from '../pages/AskPage'
 import SearchPage from '../pages/SearchPage'
 import ProfilePage from '../pages/ProfilePage'
 import FindPage from '../pages/FindPage'
-import NowPlayingPage from '../pages/NowPlayingPage'
 
 const router = createBrowserRouter([
   {
@@ -19,7 +18,6 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <HomePage /> },
       { path: '/movie', element: <MoviePage /> },
-      { path: '/movie/now-playing', element: <NowPlayingPage /> },
       { path: '/tv', element: <TVPage /> },
       { path: '/:type/:id', element: <AboutPage /> },
       { path: '/person', element: <PersonPage /> },

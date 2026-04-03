@@ -4,6 +4,7 @@ import MovieCard from './MovieCard'
 import RankCard from './RankCard'
 import HCard from './HCard'
 import { EP } from '../api/tmdb'
+import useDragScroll from '../hooks/useDragScroll'
 
 /**
  * Feed 컴포넌트: 섹션 타이틀과 카드 리스트를 포함하는 공통 섹션
@@ -15,22 +16,33 @@ import { EP } from '../api/tmdb'
  * @param {string} link - 이동할 경로 (기본값 #)
  */
 const Feed = ({ type = 'normal', title, subtitle, items = [], mediaType = 'movie', link = '#' }) => {
+  const drag = useDragScroll()
+
   if (!items || items.length === 0) return null
 
   return (
     <section className='w-full'>
       {/* [수정] SectionTitle 규격에 맞게 props 전달 */}
-      <SectionTitle 
-        title={title} 
-        subtitle={subtitle} 
-        link={link} 
+      <SectionTitle
+        title={title}
+        subtitle={subtitle}
+        link={link}
       />
 
-      {/* 카드 리스트 (가로 스크롤) */}
-      <div className={twMerge(
-        'flex gap-6 overflow-x-auto pb-8 no-scrollbar pt-4',
-        type === 'rank' && 'gap-10' 
-      )}>
+      {/* 카드 리스트 (가로 스크롤 + 드래그) */}
+      <div
+        ref={drag.ref}
+        onMouseDown={drag.onMouseDown}
+        onMouseMove={drag.onMouseMove}
+        onMouseUp={drag.onMouseUp}
+        onMouseLeave={drag.onMouseLeave}
+        onDragStart={drag.onDragStart}
+        onClickCapture={drag.onClickCapture}
+        className={twMerge(
+          'flex gap-6 overflow-x-auto pb-8 no-scrollbar pt-4 cursor-grab select-none',
+          type === 'rank' && 'gap-10'
+        )}
+      >
         {items.map((item, idx) => {
           // 공통 변수 추출
           const commonProps = {
