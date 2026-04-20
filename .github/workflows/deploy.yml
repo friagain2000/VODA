@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
 
-# GITHUB_TOKEN에 쓰기 권한을 부여합니다. (배포를 위해 필수)
 permissions:
   contents: write
 
@@ -18,11 +17,13 @@ jobs:
       - name: Install and Build 🔧
         working-directory: frontend
         run: |
-          # --legacy-peer-deps로 의존성 충돌 방지
           npm install --legacy-peer-deps
           npm run build
-          # SPA 404 방지 트릭
           cp dist/index.html dist/404.html
+        env:
+          # GitHub Secrets에 등록한 값을 빌드 환경 변수로 주입합니다.
+          VITE_TMDB_API_KEY: ${{ secrets.VITE_TMDB_API_KEY }}
+          VITE_BACKEND: ${{ secrets.VITE_BACKEND }}
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
