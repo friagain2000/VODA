@@ -31,6 +31,8 @@ const router = createBrowserRouter([
       { path: '/browse/:mediaType/:category', element: <BrowsePage /> },
     ],
   },
-])
+], {
+  basename: import.meta.env.MODE === 'production' ? '/VODA' : '/'
+})
 
 export default router
