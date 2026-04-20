@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 
-const BACKEND = 'https://vodamovie.onrender.com/chat'
+const BACKEND = import.meta.env.VITE_BACKEND ? `${import.meta.env.VITE_BACKEND}/chat` : 'http://localhost:8000/chat'
 
 const INIT_MESSAGES = [
   {

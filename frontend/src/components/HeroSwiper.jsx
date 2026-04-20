@@ -15,7 +15,7 @@ const HeroSwiper = ({ items = [], type = 'movie' }) => {
   // 1. public/videos/banner.mp4를 사용하는 커스텀 데이터 정의
   const customBanner = {
     id: 'voda-original-banner',
-    title: 'VODA Original',
+    title: 'VODA',
     overview: '예술성을 담은 UI/UX 디자인과 요리의 정성을 더해 완성한 VODA만의 특별한 콘텐츠를 감상해 보세요.',
     bgVideo: '/videos/banner.mp4', // public 폴더 기준 경로
     vote_average: 10.0

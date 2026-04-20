@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import ChatBubble from '../components/ChatBubble'
-
-const BACKEND = 'https://vodamovie.onrender.com/chat'
+import { AI } from '../api/ai'
 
 const INIT_MESSAGES = [
   { 
@@ -42,17 +41,12 @@ const AskPage = () => {
     setLoading(true)
 
     try {
-      const res = await fetch(BACKEND, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: trimmed }),
-      })
+      const res = await AI.chat(trimmed)
+      const reply = res.data.reply
       
-      if (!res.ok) throw new Error('서버 응답 오류')
-      
-      const data = await res.json()
-      setMessages((prev) => [...prev, { id: Date.now() + 1, role: 'ai', text: data.reply }])
-    } catch {
+      setMessages((prev) => [...prev, { id: Date.now() + 1, role: 'ai', text: reply }])
+    } catch (err) {
+      console.error('AI 호출 에러:', err)
       setMessages((prev) => [...prev, { 
         id: Date.now() + 1, 
         role: 'ai', 
