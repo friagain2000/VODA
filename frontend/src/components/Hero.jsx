@@ -231,12 +231,6 @@ const Hero = ({
       )}
 
       <div className='relative h-full flex flex-col justify-center px-12 md:px-20 max-w-5xl gap-6 z-30'>
-        {rating && (
-          <div className='flex items-center gap-2 text-secondary-400 font-bold text-lg'>
-            <FontAwesomeIcon icon={faStar} />
-            <span>{rating.toFixed(1)}</span>
-          </div>
-        )}
         <h1 className='text-6xl md:text-8xl font-bold tracking-tighter drop-shadow-2xl font-serif leading-none'>{title}</h1>
         <p className='text-lg md:text-xl text-neutral-300 leading-relaxed max-w-2xl line-clamp-3 font-serif font-medium'>{overview}</p>
         
