@@ -4,8 +4,8 @@ import babel from "@rolldown/plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
-export default defineConfig({
-  base: '/VODA/',
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/VODA/' : '/',
   envDir: '..',
   plugins: [react(), babel({ presets: [reactCompilerPreset()] }), tailwindcss()],
-})
+}))
