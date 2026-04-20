@@ -1,0 +1,26 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Install and Build 🔧
+        working-directory: frontend
+        run: |
+          npm ci --legacy-peer-deps
+          npm run build
+          # GitHub Pages에서 SPA 새로고침 시 404 에러를 방지하기 위한 트릭
+          cp dist/index.html dist/404.html
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: frontend/dist
+          branch: gh-pages # 빌드된 파일이 업로드될 브랜치
