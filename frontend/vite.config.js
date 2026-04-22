@@ -5,8 +5,8 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
-  // Render.com 루트 배포 시 base는 '/'여야 합니다.
-  base: "/", 
+  // 상대 경로를 사용하면 GitHub Pages(/VODA/)와 Render(/) 모두에서 자산을 정상적으로 로드합니다.
+  base: "./", 
   envDir: '..',
   plugins: [
     react(), 

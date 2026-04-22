@@ -32,7 +32,8 @@ const router = createBrowserRouter([
     ],
   },
 ], {
-  basename: '/'
+  // 현재 접속한 주소가 /VODA/로 시작하면 그에 맞춰 basename을 설정하고, 아니면 루트(/)를 사용합니다.
+  basename: window.location.pathname.startsWith('/VODA') ? '/VODA/' : '/'
 })
 
 export default router
