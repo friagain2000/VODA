@@ -1,0 +1,14 @@
+# [TMDB API 설정]
+# 발급처: https://www.themoviedb.org/settings/api
+VITE_TMDB_API_KEY=your_tmdb_api_key_here
+
+# [Hugging Face 설정]
+# 발급처: https://huggingface.co/settings/tokens
+HF_TOKEN=your_hugging_face_token_here
+
+# [Backend API 설정]
+# 로컬 개발 시 기본값: http://localhost:8000
+VITE_BACKEND_URL=http://localhost:8000
+
+# (선택 사항) 배포 환경의 URL 예시
+# VITE_BACKEND_URL=https://api.your-domain.com

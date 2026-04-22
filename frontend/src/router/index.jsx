@@ -32,7 +32,7 @@ const router = createBrowserRouter([
     ],
   },
 ], {
-  basename: import.meta.env.PROD ? '/VODA/' : '/'
+  basename: '/'
 })
 
 export default router
