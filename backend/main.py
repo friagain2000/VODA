@@ -12,8 +12,9 @@ root_path = Path(__file__).resolve().parent.parent
 env_path = root_path / ".env"
 
 if env_path.exists():
-    load_dotenv(dotenv_path=env_path)
+    load_dotenv(dotenv_path=str(env_path), override=True)
     print(f"✅ .env 로드 성공: {env_path}")
+    print(f"   HF_TOKEN: {os.getenv('HF_TOKEN', 'NOT SET')[:20]}...")
 else:
     load_dotenv()
     print("⚠️ .env 파일을 찾을 수 없습니다. 기본 설정을 사용합니다.")
