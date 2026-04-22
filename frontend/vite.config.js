@@ -5,8 +5,8 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
-  // 상대 경로를 사용하면 GitHub Pages(/VODA/)와 Render(/) 모두에서 자산을 정상적으로 로드합니다.
-  base: "./", 
+  // 배포 환경 및 루트 경로 실행을 위해 base를 "/"로 고정합니다.
+  base: "/", 
   envDir: '..',
   plugins: [
     react(), 
