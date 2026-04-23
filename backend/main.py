@@ -6,6 +6,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from huggingface_hub import InferenceClient
 import json
+import requests
 
 # 1. 환경 변수 로드
 root_path = Path(__file__).resolve().parent.parent
@@ -15,6 +16,7 @@ if env_path.exists():
     load_dotenv(dotenv_path=str(env_path), override=True)
     print(f"✅ .env 로드 성공: {env_path}")
     print(f"   HF_TOKEN: {os.getenv('HF_TOKEN', 'NOT SET')[:20]}...")
+    print(f"   TMDB_API_KEY: {os.getenv('TMDB_API_KEY', 'NOT SET')[:10]}...")
 else:
     load_dotenv()
     print("⚠️ .env 파일을 찾을 수 없습니다. 기본 설정을 사용합니다.")
@@ -77,6 +79,27 @@ def ask_ai(q: str) -> str:
             
         return f"AI 호출 오류: {error_msg}"
 
+# TMDB API 설정
+TMDB_BASE_URL = "https://api.themoviedb.org/3"
+TMDB_API_KEY = os.getenv("TMDB_API_KEY")
+
+def get_tmdb_data(endpoint, params=None):
+    if not TMDB_API_KEY:
+        raise HTTPException(status_code=500, detail="TMDB API 키가 설정되지 않았습니다.")
+    
+    url = f"{TMDB_BASE_URL}{endpoint}"
+    params = params or {}
+    params["api_key"] = TMDB_API_KEY
+    params["language"] = "ko-KR"
+    params["region"] = "KR"
+    
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"TMDB API 호출 실패: {str(e)}")
+
 @app.post("/chat")
 async def chat(req: ChatRequest):
     if not req.text.strip():
@@ -91,5 +114,31 @@ def read_root():
         "status": "VODA AI Backend is active", 
         "env_loaded": env_path.exists(),
         "has_token": bool(os.getenv("HF_TOKEN")),
-        "token_preview": os.getenv("HF_TOKEN")[:10] + "..." if os.getenv("HF_TOKEN") else None
+        "token_preview": os.getenv("HF_TOKEN")[:10] + "..." if os.getenv("HF_TOKEN") else None,
+        "tmdb_key_loaded": bool(os.getenv("TMDB_API_KEY"))
     }
+
+# TMDB API 엔드포인트
+@app.get("/movies/popular")
+def get_popular_movies(page: int = 1):
+    return get_tmdb_data("/movie/popular", {"page": page})
+
+@app.get("/tv/popular")
+def get_popular_tv(page: int = 1):
+    return get_tmdb_data("/tv/popular", {"page": page})
+
+@app.get("/trending/{media_type}/{time_window}")
+def get_trending(media_type: str, time_window: str = "week"):
+    return get_tmdb_data(f"/trending/{media_type}/{time_window}")
+
+@app.get("/movie/{movie_id}")
+def get_movie_detail(movie_id: int):
+    return get_tmdb_data(f"/movie/{movie_id}", {"append_to_response": "credits,reviews,videos,similar"})
+
+@app.get("/tv/{tv_id}")
+def get_tv_detail(tv_id: int):
+    return get_tmdb_data(f"/tv/{tv_id}", {"append_to_response": "credits,reviews,videos,similar"})
+
+@app.get("/search/multi")
+def search_multi(query: str, page: int = 1):
+    return get_tmdb_data("/search/multi", {"query": query, "page": page})
